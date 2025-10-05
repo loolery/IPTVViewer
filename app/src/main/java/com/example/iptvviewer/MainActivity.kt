@@ -106,12 +106,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setupRecyclerView()
         updateNavMenu()
 
-        // Führe die Versionsanzeige nur auf Nicht-TV-Geräten aus
+        // Führe die Versionsanzeige nicht aufm TV aus
         if (!isTv()) {
             setupVersionTextView()
         }
 
-        // Verbesserte Startlogik
+        // Start
         val lastUrl = getLastOpenedPlaylistUrl()
         val playlists = getPlaylists()
         if (lastUrl != null && playlists.any { it.url == lastUrl }) {

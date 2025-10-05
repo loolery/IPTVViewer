@@ -14,29 +14,27 @@ class ChannelAdapter(
 
     class ChannelViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val channelName: TextView = itemView.findViewById(R.id.channelName)
-        // NEU: Referenz auf den Abstandhalter
+
         private val indentSpace: View = itemView.findViewById(R.id.indent_space)
 
         fun bind(channel: Channel, onChannelClick: (Channel) -> Unit) {
             channelName.text = channel.name
 
-            // 1. Prüfen, ob der Kanal ein "spezieller" Kanal ist
+            // Prüfen, ob der Kanal ein Gruppentitel ist
             val isSpecial = channel.name.isNotEmpty() && !channel.name.first().isLetterOrDigit()
 
             if (isSpecial) {
-                // STIL FÜR SPEZIELLE KANÄLE (GRUPPENTITEL)
-                // Einrücken: Mache den Abstandhalter sichtbar
+                // GRUPPENTITEL Einrücken
                 indentSpace.visibility = View.VISIBLE
                 // Hintergrundfarbe setzen
                 itemView.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.special_channel_background))
-                // Nicht klickbar machen
+                // unklickbar
                 itemView.setOnClickListener(null)
 
             } else {
-                // STIL FÜR NORMALE KANÄLE (WICHTIG: Zurücksetzen!)
-                // Einrückung entfernen: Mache den Abstandhalter unsichtbar
+                // STIL FÜR normale Kanäle, Abstandhalter unsichtbar
                 indentSpace.visibility = View.GONE
-                // Hintergrund zurücksetzen (damit der Klick-Effekt funktioniert)
+                // Hintergrund zurücksetzen
                 itemView.setBackgroundResource(android.R.drawable.list_selector_background)
                 // Klickbar machen
                 itemView.setOnClickListener { onChannelClick(channel) }
