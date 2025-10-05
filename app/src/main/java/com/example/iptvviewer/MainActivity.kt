@@ -361,18 +361,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun checkForUpdates() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val jsonString = getTextFromUrl("https://benevolent-stardust-255e9c.netlify.app/update.json")
+                val jsonString = getTextFromUrl("https://api.github.com/repos/loolery/IPTVViewer/releases/latest")
                 val json = JSONObject(jsonString)
-                val latestVersionCode = json.getInt("versionCode")
-                val apkUrl = json.optString("apkUrl", "")
+                val latestVersionName = json.getString("tag_name").removePrefix("v") // Entfernt das "v" falls vorhanden
+                val assets = json.getJSONArray("assets")
+                var apkUrl = ""
+                for (i in 0 until assets.length()) {
+                    val asset = assets.getJSONObject(i)
+                    if (asset.getString("name").endsWith(".apk")) {
+                        apkUrl = asset.getString("browser_download_url")
+                        break
+                    }
+                }
 
                 if (apkUrl.isBlank()) {
+                    Log.e("MainActivity", "Keine APK in den Assets des neuesten Releases gefunden.")
                     return@launch
                 }
 
-                val currentVersionCode = getCurrentVersionCode()
+                val currentVersionName = getCurrentVersionName()
 
-                if (latestVersionCode > currentVersionCode) {
+                if (isNewerVersion(latestVersionName, currentVersionName)) {
                     withContext(Dispatchers.Main) {
                         showUpdateDialog(apkUrl)
                     }
@@ -382,6 +391,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
     }
+
+    // Hilfsfunktion zum Vergleichen von Versionen (z.B. "1.0.1" vs "1.0.0")
+    private fun isNewerVersion(latest: String, current: String): Boolean {
+        val latestParts = latest.split('.').map { it.toInt() }
+        val currentParts = current.split('.').map { it.toInt() }
+        val a = latestParts.getOrElse(0) { 0 }
+        val b = latestParts.getOrElse(1) { 0 }
+        val c = latestParts.getOrElse(2) { 0 }
+
+        val a2 = currentParts.getOrElse(0) { 0 }
+        val b2 = currentParts.getOrElse(1) { 0 }
+        val c2 = currentParts.getOrElse(2) { 0 }
+
+        if(a > a2)return true
+        if(a == a2 && b > b2) return true
+        if(a == a2 && b == b2 && c > c2)return true
+
+        return false
+    }
+
 
     private fun showUpdateDialog(apkUrl: String) {
         AlertDialog.Builder(this)
@@ -459,12 +488,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private fun getCurrentVersionCode(): Int {
+    private fun getCurrentVersionName(): String {
         return try {
             val packageInfo = packageManager.getPackageInfo(packageName, 0)
-            packageInfo.versionCode
+            packageInfo.versionName ?: "0.0.0"
         } catch (e: Exception) {
-            -1
+            "0.0.0"
         }
     }
 
@@ -475,6 +504,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             playStreamInExternalPlayer(clickedChannel.streamUrl)
         }
         recyclerView.adapter = channelAdapter
+        recyclerView.requestFocus()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
