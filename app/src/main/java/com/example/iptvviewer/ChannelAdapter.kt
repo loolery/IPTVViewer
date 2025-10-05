@@ -30,6 +30,8 @@ class ChannelAdapter(
                 itemView.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.special_channel_background))
                 // unklickbar
                 itemView.setOnClickListener(null)
+                // Nicht fokussierbar machen
+                itemView.isFocusable = false
 
             } else {
                 // STIL FÜR normale Kanäle, Abstandhalter unsichtbar
@@ -38,6 +40,8 @@ class ChannelAdapter(
                 itemView.setBackgroundResource(android.R.drawable.list_selector_background)
                 // Klickbar machen
                 itemView.setOnClickListener { onChannelClick(channel) }
+                // Fokussierbar machen
+                itemView.isFocusable = true
             }
         }
     }

@@ -105,11 +105,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         setupRecyclerView()
         updateNavMenu()
+        setupVersionTextView()
 
-        // Führe die Versionsanzeige nicht aufm TV aus
-        if (!isTv()) {
-            setupVersionTextView()
-        }
 
         // Start
         val lastUrl = getLastOpenedPlaylistUrl()
@@ -381,6 +378,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 val currentVersionName = getCurrentVersionName()
 
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@MainActivity, "Aktuell: $currentVersionName, Neueste: $latestVersionName", Toast.LENGTH_LONG).show()
+                }
+
+
                 if (isNewerVersion(latestVersionName, currentVersionName)) {
                     withContext(Dispatchers.Main) {
                         showUpdateDialog(apkUrl)
@@ -388,6 +390,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             } catch (e: Exception) {
                 Log.e("MainActivity", "Fehler bei der Update-Prüfung", e)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@MainActivity, "Update-Fehler: ${e.message}", Toast.LENGTH_LONG).show()
+                }
             }
         }
     }

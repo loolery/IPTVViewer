@@ -8,7 +8,9 @@
     android:paddingBottom="12dp"
     android:paddingEnd="16dp"
     android:paddingStart="16dp"
-    android:background="?android:attr/selectableItemBackground"> <!-- Fügt Klick-Effekt hinzu -->
+    android:background="@drawable/item_selector"
+    android:focusable="true"
+    android:clickable="true">
 
     <!-- DIES IST NEU: Ein unsichtbarer Abstandhalter für die Einrückung -->
     <Space
