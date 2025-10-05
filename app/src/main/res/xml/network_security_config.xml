@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Erlaube unverschlüsselten HTTP-Verkehr für alle Domains,
+         die nicht durch spezifischere Regeln unten abgedeckt sind.
+         Das ist die flexibelste Lösung für vom Benutzer bereitgestellte URLs. -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <!-- Spezifische Regeln können hier bei Bedarf weiterhin hinzugefügt werden.
+         Momentan sind aber keine mehr nötig, da die base-config alles abdeckt. -->
+    <domain-config>
+        <domain includeSubdomains="true">benevolent-stardust-255e9c.netlify.app</domain>
+        <domain includeSubdomains="true">iptv.watchhd.cc</domain>
+        <!-- In Zukunft könntest du hier Domains hinzufügen, für die du
+             spezielle Sicherheitsregeln (wie Certificate Pinning) erzwingen möchtest. -->
+    </domain-config>
+
+</network-security-config>
