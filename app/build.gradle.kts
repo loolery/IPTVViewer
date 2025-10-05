@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.iptvviewer"
-        minSdk = 26
+        minSdk = 22
         targetSdk = 35
         versionCode = 2
         versionName = "1.0.1"
