@@ -105,7 +105,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         setupRecyclerView()
         updateNavMenu()
-        setupVersionTextView() // Versionsanzeige initialisieren
+
+        // Führe die Versionsanzeige nur auf Nicht-TV-Geräten aus
+        if (!isTv()) {
+            setupVersionTextView()
+        }
 
         // Verbesserte Startlogik
         val lastUrl = getLastOpenedPlaylistUrl()
@@ -131,10 +135,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    // ÜBERARBEITET: Verwendet den globalen findViewById der Aktivität
+    private fun isTv(): Boolean {
+        return packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
+    }
+
     private fun setupVersionTextView() {
         try {
-            // Sicherer, aktivitätsweiter Zugriff auf das TextView
             val versionTextView = findViewById<TextView>(R.id.version_text_view)
             if (versionTextView != null) {
                 val packageInfo = packageManager.getPackageInfo(packageName, 0)
